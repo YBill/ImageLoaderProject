@@ -387,14 +387,6 @@ public class GlideLoader implements ILoader {
 
     @Override
     public void pause(Object targetContext) {
-        /**
-         * 递归所有 childFragments 的 RequestManager 的pauseRequest方法。
-         * 在 Glide 中源码中没有用到，暴露给开发者的接口。
-         * childFragments 表示那些依赖当前 Activity 或者 Fragment 的所有 fragments
-         * 1、如果当前 Context 是 Activity，那么依附它的所有 fragments 的请求都会中止
-         * 2、如果当前 Context 是 Fragment，那么依附它的所有 childFragment 的请求都会中止
-         * 3、如果当前的 Context 是 ApplicationContext，或者当前的 Fragment 处于 detached 状态，那么只有当前的 RequestManager 的请求会被中止
-         * */
         if (targetContext instanceof Activity) {
             Glide.with((Activity) targetContext).pauseRequestsRecursive();
         } else if (targetContext instanceof Fragment) {

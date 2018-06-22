@@ -41,32 +41,54 @@ public class ImageLoader {
         return GlobalConfig.getLoader();
     }
 
-    public void resume(Object targetContext) {
+    /**
+     * 更换图片加载器
+     *
+     * @param loader
+     */
+    public static void setLoader(ILoader loader) {
+        GlobalConfig.setLoader(loader);
+    }
+
+    public static void resume(Object targetContext) {
         getActualLoader().resume(targetContext);
     }
 
-    public void pause(Object targetContext) {
+    /**
+     * 中断图片加载
+     *
+     * @param targetContext 1、如果当前 targetContext 是 Activity，那么依附它的所有 fragments 的请求都会中止
+     *                      2、如果当前 targetContext 是 Fragment，那么依附它的所有 childFragment 的请求都会中止
+     *                      3、如果当前 targetContext 是 ApplicationContext，或者当前的 Fragment 处于 detached 状态，那么只有当前的 RequestManager 的请求会被中止
+     */
+    public static void pause(Object targetContext) {
         getActualLoader().pause(targetContext);
     }
 
-    public void clear(View view) {
-        getActualLoader().clear(view);
-    }
-
-    public void clearDiskCache() {
+    /**
+     * 清除磁盘缓存
+     */
+    public static void clearDiskCache() {
         getActualLoader().clearDiskCache();
     }
 
-    public void clearMemory() {
+    /**
+     * 清除内存缓存
+     */
+    public static void clearMemory() {
         getActualLoader().clearMemory();
     }
 
-    public void onLowMemory() {
+    public static void onLowMemory() {
         getActualLoader().onLowMemory();
     }
 
-    public void trimMemory(int level) {
+    public static void trimMemory(int level) {
         getActualLoader().trimMemory(level);
+    }
+
+    public static void clear(View view) {
+        getActualLoader().clear(view);
     }
 
 }
