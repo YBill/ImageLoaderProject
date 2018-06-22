@@ -136,7 +136,7 @@ public class ImageConfig {
         private int error = -1;
         private Drawable placeholderDrawable;
         private Drawable errorDrawable;
-        private boolean skip = true;
+        private boolean skip = false;
         private boolean preload = false;
         private boolean checkUrl = false;
         private ImageMode.ScaleMode scaleMode;
