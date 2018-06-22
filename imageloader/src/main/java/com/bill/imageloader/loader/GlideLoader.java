@@ -48,7 +48,6 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import jp.wasabeef.glide.transformations.gpu.BrightnessFilterTransformation;
 import jp.wasabeef.glide.transformations.gpu.ContrastFilterTransformation;
 import jp.wasabeef.glide.transformations.gpu.InvertFilterTransformation;
-import jp.wasabeef.glide.transformations.gpu.KuwaharaFilterTransformation;
 import jp.wasabeef.glide.transformations.gpu.PixelationFilterTransformation;
 import jp.wasabeef.glide.transformations.gpu.SepiaFilterTransformation;
 import jp.wasabeef.glide.transformations.gpu.SketchFilterTransformation;
@@ -72,6 +71,11 @@ public class GlideLoader implements ILoader {
     @Override
     public void test(ImageConfig config) {
         // 测试glide内容
+        Glide.with((Activity) config.requestContext)
+                .load(config.load)
+                .into(config.imageView);
+
+
     }
 
     @Override
@@ -194,95 +198,100 @@ public class GlideLoader implements ILoader {
     }
 
     private <T> void transform(ImageConfig config, GlideRequest<T> glideRequest) {
+        if (config.filterType == null) {
+            return;
+        }
+
+        int length = config.filterType.length;
+
+        if (length == 0) {
+            return;
+        }
+
         List<Transformation> list = new ArrayList<>();
 
-        for (int i = 0; i < config.filterType.length; i++) {
+        for (int i = 0; i < length; i++) {
             ImageMode.FilterType filterType = config.filterType[i];
-            if (ImageMode.FilterType.Mask == filterType) {
-                // 遮罩
-                list.add(new MaskTransformation(0));
+
+            if (ImageMode.FilterType.RoundedCorners == filterType) {
+                // 圆角
+                int radius = ImageContact.dip2px(config.rectRoundRadius);
+                list.add(new RoundedCornersTransformation(radius, 0, config.cornerMode.getCorner()));
             }
-            if (ImageMode.FilterType.NinePatchMask == filterType) {
-                // .9
-                list.add(new MaskTransformation(0));
+            if (ImageMode.FilterType.CropCircle == filterType) {
+                // 圆
+                list.add(new CropCircleTransformation());
+            }
+            if (ImageMode.FilterType.CropSquare == filterType) {
+                // 正方形
+                list.add(new CropSquareTransformation());
             }
             if (ImageMode.FilterType.Crop == filterType) {
                 // Crop
-                list.add(new CropTransformation(config.cropWidth, config.cropHeight, config.cropMode.getCrop()));
+                int cropWidth = ImageContact.dip2px(config.cropWidth);
+                int cropHeight = ImageContact.dip2px(config.cropHeight);
+                list.add(new CropTransformation(cropWidth, cropHeight, config.cropMode.getCrop()));
             }
-            if (ImageMode.FilterType.CropSquare == filterType) {
-                // CropSquare
-                list.add(new CropSquareTransformation());
-            }
-            if (ImageMode.FilterType.CropCircle == filterType) {
-                // CropCircle
-                list.add(new CropCircleTransformation());
+            if (ImageMode.FilterType.Blur == filterType) {
+                // 高斯模糊
+                list.add(new BlurTransformation(config.blurRadius));
             }
             if (ImageMode.FilterType.ColorFilter == filterType) {
                 // 滤镜
                 list.add(new ColorFilterTransformation(config.colorFilter));
             }
             if (ImageMode.FilterType.Grayscale == filterType) {
-                // 灰度
+                // 黑白
                 list.add(new GrayscaleTransformation());
             }
-            if (ImageMode.FilterType.RoundedCorners == filterType) {
-                // 圆角
-                int radius = ImageContact.dip2px(config.rectRoundRadius);
-                list.add(new RoundedCornersTransformation(radius, 0, config.cornerMode.getCorner()));
-            }
-            if (ImageMode.FilterType.Blur == filterType) {
-                // 高斯模糊
-                list.add(new BlurTransformation(config.blurRadius));
+            if (ImageMode.FilterType.Sepia == filterType) {
+                // 水墨画
+                list.add(new SepiaFilterTransformation(config.intensity));
             }
             if (ImageMode.FilterType.Toon == filterType) {
-                // 卡通
+                //  油画
                 list.add(new ToonFilterTransformation(config.toonThreshold, config.toonQuantizationLevels));
-            }
-            if (ImageMode.FilterType.Sepia == filterType) {
-                // 黑白效果
-                list.add(new SepiaFilterTransformation(config.intensity));
             }
             if (ImageMode.FilterType.Contrast == filterType) {
                 // 锐化
                 list.add(new ContrastFilterTransformation(config.contrast));
             }
-            if (ImageMode.FilterType.Invert == filterType) {
-                // 胶片
-                list.add(new InvertFilterTransformation());
-            }
-            if (ImageMode.FilterType.Pixelation == filterType) {
-                // 马赛克
-                list.add(new PixelationFilterTransformation(config.pixelationFilter));
+            if (ImageMode.FilterType.Brightness == filterType) {
+                // 亮度
+                list.add(new BrightnessFilterTransformation(config.brightness));
             }
             if (ImageMode.FilterType.Sketch == filterType) {
                 // 素描
                 list.add(new SketchFilterTransformation());
             }
+            if (ImageMode.FilterType.Pixelation == filterType) {
+                // 马赛克
+                list.add(new PixelationFilterTransformation(config.pixelation));
+            }
+            if (ImageMode.FilterType.Invert == filterType) {
+                // 胶片
+                list.add(new InvertFilterTransformation());
+            }
             if (ImageMode.FilterType.Swirl == filterType) {
                 // 旋涡
                 list.add(new SwirlFilterTransformation(config.swirlRadius, config.swirlAngle, new PointF(config.swirlX, config.swirlY)));
             }
-            if (ImageMode.FilterType.Brightness == filterType) {
-                // 亮度
-                list.add(new BrightnessFilterTransformation(config.brightness));
-            }
-            if (ImageMode.FilterType.Kuwahara == filterType) {
-                // Kuwahara
-                list.add(new KuwaharaFilterTransformation(config.kuwaharaRadius));
-            }
             if (ImageMode.FilterType.Vignette == filterType) {
                 // 晕映
                 list.add(new VignetteFilterTransformation(new PointF(config.vignetteX, config.vignetteY),
-                        new float[]{config.vignetteColor1, config.vignetteColor2, config.vignetteColor3}, config.vignetteStart, config.vignetteEnd));
+                        new float[]{config.vignetteColorRed, config.vignetteColorGreen, config.vignetteColorBlue}, config.vignetteStart, config.vignetteEnd));
+            }
+            if (ImageMode.FilterType.Mask == filterType) {
+                // 遮罩
+                list.add(new MaskTransformation(config.maskId));
             }
 
         }
 
-        int length = list.size();
-        if (length > 0) {
-            Transformation[] transformation = new Transformation[length];
-            for (int i = 0; i < length; i++) {
+        int listLength = list.size();
+        if (listLength > 0) {
+            Transformation[] transformation = new Transformation[listLength];
+            for (int i = 0; i < listLength; i++) {
                 transformation[i] = list.get(i);
             }
 

@@ -1,6 +1,7 @@
 package com.bill.imageloader.config;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 
@@ -38,21 +39,20 @@ public class ImageConfig {
 
     // transform
     public ImageMode.FilterType[] filterType;
-    public ImageMode.CropMode cropMode;
-    public int cropWidth, cropHeight;
     public int rectRoundRadius;
     public ImageMode.CornerMode cornerMode;
-    public boolean needBlur;
+    public ImageMode.CropMode cropMode;
+    public int cropWidth, cropHeight;
     public int blurRadius;
-    public float brightness;
     public int colorFilter;
-    public float swirlRadius, swirlAngle, swirlX, swirlY;
-    public float toonThreshold, toonQuantizationLevels;
     public float intensity;
+    public float toonThreshold, toonQuantizationLevels;
     public float contrast;
-    public float pixelationFilter;
-    public float vignetteX, vignetteY, vignetteColor1, vignetteColor2, vignetteColor3, vignetteStart, vignetteEnd;
-    public int kuwaharaRadius;
+    public float brightness;
+    public float pixelation;
+    public float swirlRadius, swirlAngle, swirlX, swirlY;
+    public float vignetteX, vignetteY, vignetteColorRed, vignetteColorGreen, vignetteColorBlue, vignetteStart, vignetteEnd;
+    public int maskId;
 
     public ImageConfig(ConfigBuilder builder) {
         this.requestContext = builder.requestContext;
@@ -67,8 +67,6 @@ public class ImageConfig {
         this.skip = builder.skip;
         this.preload = builder.preload;
         this.checkUrl = builder.checkUrl;
-        this.rectRoundRadius = builder.rectRoundRadius;
-        this.cornerMode = builder.cornerMode;
         this.scaleMode = builder.scaleMode;
         this.loaderListener = builder.loaderListener;
         this.progressListener = builder.progressListener;
@@ -77,8 +75,33 @@ public class ImageConfig {
         this.width = builder.width;
         this.height = builder.height;
         this.size = builder.size;
-        this.needBlur = builder.needBlur;
+
+        this.filterType = builder.filterType;
+        this.rectRoundRadius = builder.rectRoundRadius;
+        this.cornerMode = builder.cornerMode;
+        this.cropWidth = builder.cropWidth;
+        this.cropHeight = builder.cropHeight;
+        this.cropMode = builder.cropMode;
         this.blurRadius = builder.blurRadius;
+        this.colorFilter = builder.colorFilter;
+        this.intensity = builder.intensity;
+        this.toonThreshold = builder.toonThreshold;
+        this.toonQuantizationLevels = builder.toonQuantizationLevels;
+        this.contrast = builder.contrast;
+        this.brightness = builder.brightness;
+        this.pixelation = builder.pixelation;
+        this.swirlRadius = builder.swirlRadius;
+        this.swirlAngle = builder.swirlAngle;
+        this.swirlX = builder.swirlX;
+        this.swirlY = builder.swirlY;
+        this.vignetteX = builder.vignetteX;
+        this.vignetteY = builder.vignetteY;
+        this.vignetteColorRed = builder.vignetteColorRed;
+        this.vignetteColorGreen = builder.vignetteColorGreen;
+        this.vignetteColorBlue = builder.vignetteColorBlue;
+        this.vignetteStart = builder.vignetteStart;
+        this.vignetteEnd = builder.vignetteEnd;
+        this.maskId = builder.maskId;
     }
 
     private void show() {
@@ -116,8 +139,6 @@ public class ImageConfig {
         private boolean skip = true;
         private boolean preload = false;
         private boolean checkUrl = false;
-        private int rectRoundRadius;
-        private ImageMode.CornerMode cornerMode = ImageMode.CornerMode.ALL;
         private ImageMode.ScaleMode scaleMode;
         private LoaderListener loaderListener;
         private OnProgressListener progressListener;
@@ -126,8 +147,23 @@ public class ImageConfig {
         private int width = -1;
         private int height = -1;
         private int size = -1;
-        private boolean needBlur;
-        private int blurRadius;
+
+        private ImageMode.FilterType[] filterType;
+        private int rectRoundRadius;
+        private ImageMode.CornerMode cornerMode = ImageMode.CornerMode.ALL;
+        private ImageMode.CropMode cropMode = ImageMode.CropMode.CENTER;
+        private int cropWidth = 0, cropHeight = 0;
+        private int blurRadius = 25;
+        private int colorFilter;
+        private float intensity = 1.0f;
+        private float toonThreshold = .2f, toonQuantizationLevels = 10.0f;
+        private float contrast = 1.0f;
+        private float brightness = 0.0f;
+        private float pixelation = 10.0f;
+        private float swirlRadius = .5f, swirlAngle = 1.0f, swirlX = 0.5f, swirlY = 0.5f;
+        private float vignetteX = 0.5f, vignetteY = 0.5f, vignetteColorRed = 0.0f, vignetteColorGreen = 0.0f, vignetteColorBlue = 0.0f,
+                vignetteStart = 0.0f, vignetteEnd = 0.75f;
+        private int maskId;
 
         /**
          * Activity or android.support.v4.app.Fragment or Context or any
@@ -137,6 +173,196 @@ public class ImageConfig {
         public ConfigBuilder(Object requestContext) {
             this.requestContext = requestContext;
         }
+
+        ///////////////////////transform start////////////////////////
+
+        /**
+         * 变换，滤镜  必填
+         *
+         * @param filterType
+         * @return
+         */
+        public ConfigBuilder filterType(ImageMode.FilterType... filterType) {
+            this.filterType = filterType;
+            return this;
+        }
+
+        /**
+         * 设置圆角（px）,必填
+         *
+         * @param rectRoundRadius
+         * @return
+         */
+        public ConfigBuilder rectRoundRadius(int rectRoundRadius) {
+            this.rectRoundRadius = rectRoundRadius;
+            return this;
+        }
+
+        /**
+         * 设置圆角的模式，默认ImageMode.CornerMode.ALL(四个角)
+         *
+         * @param cornerMode
+         * @return
+         */
+        public ConfigBuilder cornerMode(ImageMode.CornerMode cornerMode) {
+            this.cornerMode = cornerMode;
+            return this;
+        }
+
+        /**
+         * crop 大小（px） 必填
+         *
+         * @param cropWidth
+         * @param cropHeight
+         * @return
+         */
+        public ConfigBuilder cropSize(int cropWidth, int cropHeight) {
+            this.cropWidth = cropWidth;
+            this.cropHeight = cropHeight;
+            return this;
+        }
+
+        /**
+         * 设置圆角的模式，默认ImageMode.CropMode.CENTER(四个角)
+         *
+         * @param cropMode
+         * @return
+         */
+        public ConfigBuilder cropMode(ImageMode.CropMode cropMode) {
+            this.cropMode = cropMode;
+            return this;
+        }
+
+        /**
+         * 模糊半径
+         *
+         * @param blurRadius
+         * @return
+         */
+        public ConfigBuilder blurRadius(int blurRadius) {
+            this.blurRadius = blurRadius;
+            return this;
+        }
+
+        /**
+         * 滤镜颜色 必填
+         *
+         * @param colorFilter
+         * @return
+         */
+        public ConfigBuilder colorFilter(@ColorRes int colorFilter) {
+            this.colorFilter = colorFilter;
+            return this;
+        }
+
+        /**
+         * 水墨强度
+         *
+         * @param intensity def 1.0f
+         * @return
+         */
+        public ConfigBuilder intensity(float intensity) {
+            this.intensity = intensity;
+            return this;
+        }
+
+        /**
+         * 油画
+         *
+         * @param toonThreshold          def:.2f
+         * @param toonQuantizationLevels def:10.0f
+         * @return
+         */
+        public ConfigBuilder toon(float toonThreshold, float toonQuantizationLevels) {
+            this.toonThreshold = toonThreshold;
+            this.toonQuantizationLevels = toonQuantizationLevels;
+            return this;
+        }
+
+        /**
+         * 锐化对比度
+         *
+         * @param contrast def：1.0f（正常情况）   取值：0.0-4.0
+         * @return
+         */
+        public ConfigBuilder contrast(float contrast) {
+            this.contrast = contrast;
+            return this;
+        }
+
+        /**
+         * 亮度值
+         *
+         * @param brightness def：0.0f（正常情况）   取值：-1.0-1.0
+         * @return
+         */
+        public ConfigBuilder brightness(float brightness) {
+            this.brightness = brightness;
+            return this;
+        }
+
+        /**
+         * 像素密度
+         *
+         * @param pixelation def：10.0f
+         * @return
+         */
+        public ConfigBuilder pixelation(float pixelation) {
+            this.pixelation = pixelation;
+            return this;
+        }
+
+        /**
+         * @param swirlRadius 半径 0.0 to 1.0, default 0.5
+         * @param swirlAngle  角度  minimum 0.0, default 1.0
+         * @param swirlX      中心点坐标x     default 0.5
+         * @param swirlY      中心点坐标y    default 0.5
+         * @return
+         */
+        public ConfigBuilder swirl(float swirlRadius, float swirlAngle, float swirlX, float swirlY) {
+            this.swirlRadius = swirlRadius;
+            this.swirlAngle = swirlAngle;
+            this.swirlX = swirlX;
+            this.swirlY = swirlY;
+            return this;
+        }
+
+        /**
+         * 映晕
+         *
+         * @param vignetteX          中心点坐标x     default 0.5
+         * @param vignetteY          中心点坐标y    default 0.5
+         * @param vignetteColorRed   红  default 0.0
+         * @param vignetteColorGreen 绿 default 0.0
+         * @param vignetteColorBlue  蓝  default 0.0
+         * @param vignetteStart      default 0.0
+         * @param vignetteEnd        default 0.75
+         * @return
+         */
+        public ConfigBuilder vignette(float vignetteX, float vignetteY, float vignetteColorRed,
+                                      float vignetteColorGreen, float vignetteColorBlue, float vignetteStart, float vignetteEnd) {
+            this.vignetteX = vignetteX;
+            this.vignetteY = vignetteY;
+            this.vignetteColorRed = vignetteColorRed;
+            this.vignetteColorGreen = vignetteColorGreen;
+            this.vignetteColorBlue = vignetteColorBlue;
+            this.vignetteStart = vignetteStart;
+            this.vignetteEnd = vignetteEnd;
+            return this;
+        }
+
+        /**
+         * 必填 可以是图片和.9图资源
+         *
+         * @param maskId
+         * @return
+         */
+        public ConfigBuilder maskId(@DrawableRes int maskId) {
+            this.maskId = maskId;
+            return this;
+        }
+
+        ////////////////////////transform end///////////////////////
 
         /**
          * 加载资源
@@ -238,28 +464,6 @@ public class ImageConfig {
         }
 
         /**
-         * 设置圆角（px）
-         *
-         * @param rectRoundRadius
-         * @return
-         */
-        public ConfigBuilder rectRoundRadius(int rectRoundRadius) {
-            this.rectRoundRadius = rectRoundRadius;
-            return this;
-        }
-
-        /**
-         * 设置圆角的模式，默认ImageMode.CornerMode.ALL(四个角)
-         *
-         * @param cornerMode
-         * @return
-         */
-        public ConfigBuilder cornerMode(ImageMode.CornerMode cornerMode) {
-            this.cornerMode = cornerMode;
-            return this;
-        }
-
-        /**
          * 设置scaleType
          *
          * @param scaleMode
@@ -328,28 +532,6 @@ public class ImageConfig {
         }
 
         /**
-         * 是否需要模糊，默认false
-         *
-         * @param needBlur
-         * @return
-         */
-        public ConfigBuilder blur(boolean needBlur) {
-            this.needBlur = needBlur;
-            return this;
-        }
-
-        /**
-         * 模糊半径
-         *
-         * @param blurRadius
-         * @return
-         */
-        public ConfigBuilder blurRadius(int blurRadius) {
-            this.blurRadius = blurRadius;
-            return this;
-        }
-
-        /**
          * 设置后会执行into(listener)，不需要imageView,会将Bitmap回调回去
          *
          * @param bitmapListener
@@ -370,12 +552,6 @@ public class ImageConfig {
             new ImageConfig(this).show();
         }
 
-        @Deprecated
-        public void test(ImageView imageView) {
-            this.imageView = imageView;
-            new ImageConfig(this).test();
-        }
-
         /**
          * 预加载or加载，默认false
          *
@@ -384,6 +560,12 @@ public class ImageConfig {
         public void preload() {
             this.preload = true;
             new ImageConfig(this).show();
+        }
+
+        @Deprecated
+        public void test(ImageView imageView) {
+            this.imageView = imageView;
+            new ImageConfig(this).test();
         }
 
     }

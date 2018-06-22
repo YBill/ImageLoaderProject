@@ -96,27 +96,28 @@ public class ImageMode {
      * 滤镜类型
      */
     public enum FilterType {
-        Mask,
-        NinePatchMask,
-        Crop,
-        CropSquare,
+        RoundedCorners,
         CropCircle,
+        CropSquare,
+        Crop,
+        Blur,
         ColorFilter,
         Grayscale,
-        RoundedCorners,
-        Blur,
-        Toon,
         Sepia,
+        Toon,
         Contrast,
-        Invert,
-        Pixelation,
-        Sketch,
-        Swirl,
         Brightness,
-        Kuwahara,
-        Vignette
+        Sketch,
+        Pixelation,
+        Invert,
+        Swirl,
+        Vignette,
+        Mask,
     }
 
+    /**
+     * Crop方式
+     */
     public enum CropMode {
         TOP(CropTransformation.CropType.TOP),
         CENTER(CropTransformation.CropType.CENTER),
