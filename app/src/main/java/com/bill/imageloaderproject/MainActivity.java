@@ -83,22 +83,22 @@ public class MainActivity extends AppCompatActivity {
                 .into(imageView3);
 
         ImageLoader.with(this)
-                .load(R.mipmap.timg)
+                .load(R.mipmap.pic)
                 .filterType(ImageMode.FilterType.Crop)
-                .cropSize(200, 200)
+                .cropSize(300, 100)
                 .cropMode(ImageMode.CropMode.TOP)
                 .into(imageView4);
 
         ImageLoader.with(this)
-                .load(R.mipmap.timg)
+                .load(R.mipmap.pic)
                 .filterType(ImageMode.FilterType.Crop)
-                .cropSize(200, 200)
+                .cropSize(300, 100)
                 .into(imageView5);
 
         ImageLoader.with(this)
-                .load(R.mipmap.timg)
+                .load(R.mipmap.pic)
                 .filterType(ImageMode.FilterType.Crop)
-                .cropSize(200, 200)
+                .cropSize(300, 100)
                 .cropMode(ImageMode.CropMode.BOTTOM)
                 .into(imageView6);
 
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         ImageLoader.with(this)
                 .load(R.mipmap.timg)
                 .filterType(ImageMode.FilterType.Mask)
-                .maskId(R.mipmap.mask_starfish)
+                .maskId(R.mipmap.mask)
                 .into(imageView19);
 
         // 组合效果
