@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 .into(imageView2);
 
         ImageLoader.with(this)
-                .load(R.mipmap.timg)
+                .load(R.mipmap.pic)
                 .filterType(ImageMode.FilterType.CropSquare)
                 .into(imageView3);
 
