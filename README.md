@@ -299,5 +299,5 @@ maskId(@DrawableRes int maskId)
 ```
 
 ##  eg:
-![image](https://raw.githubusercontent.com/YBill/TextScroll/master/screenshots/sr_1.gif)
+![image](https://raw.githubusercontent.com/YBill/ImageLoaderProject/master/screenshots/sr_1.gif)
 
