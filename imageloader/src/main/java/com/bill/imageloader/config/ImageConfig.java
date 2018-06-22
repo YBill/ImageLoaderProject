@@ -223,7 +223,7 @@ public class ImageConfig {
         }
 
         /**
-         * 设置圆角的模式，默认ImageMode.CropMode.CENTER(四个角)
+         * 裁剪部位，默认ImageMode.CropMode.CENTER
          *
          * @param cropMode
          * @return
@@ -313,6 +313,8 @@ public class ImageConfig {
         }
 
         /**
+         * 旋涡
+         *
          * @param swirlRadius 半径 0.0 to 1.0, default 0.5
          * @param swirlAngle  角度  minimum 0.0, default 1.0
          * @param swirlX      中心点坐标x     default 0.5
@@ -475,39 +477,6 @@ public class ImageConfig {
         }
 
         /**
-         * 加载图片回调
-         *
-         * @param loaderListener
-         * @return
-         */
-        public ConfigBuilder listener(LoaderListener loaderListener) {
-            this.loaderListener = loaderListener;
-            return this;
-        }
-
-        /**
-         * 网络Gif图加载进度回调
-         *
-         * @param progressListener
-         * @return
-         */
-        public ConfigBuilder progress(OnProgressListener progressListener) {
-            this.progressListener = progressListener;
-            return this;
-        }
-
-        /**
-         * 强制加载图片
-         *
-         * @param forceDisplay
-         * @return
-         */
-        public ConfigBuilder forceDisplay(boolean forceDisplay) {
-            this.forceDisplay = forceDisplay;
-            return this;
-        }
-
-        /**
          * 设置大小
          *
          * @param width
@@ -528,6 +497,39 @@ public class ImageConfig {
          */
         public ConfigBuilder size(int size) {
             this.size = size;
+            return this;
+        }
+
+        /**
+         * 强制加载图片
+         *
+         * @param forceDisplay
+         * @return
+         */
+        public ConfigBuilder forceDisplay(boolean forceDisplay) {
+            this.forceDisplay = forceDisplay;
+            return this;
+        }
+
+        /**
+         * 加载图片回调
+         *
+         * @param loaderListener
+         * @return
+         */
+        public ConfigBuilder listener(LoaderListener loaderListener) {
+            this.loaderListener = loaderListener;
+            return this;
+        }
+
+        /**
+         * 网络Gif图加载进度回调
+         *
+         * @param progressListener
+         * @return
+         */
+        public ConfigBuilder progress(OnProgressListener progressListener) {
+            this.progressListener = progressListener;
             return this;
         }
 
