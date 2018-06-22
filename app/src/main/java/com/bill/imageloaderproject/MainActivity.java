@@ -2,17 +2,23 @@ package com.bill.imageloaderproject;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bill.imageloader.ImageLoader;
 import com.bill.imageloader.config.ImageMode;
+import com.bill.imageloader.listener.LoaderListener;
+import com.bill.imageloader.listener.OnProgressListener;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private final static int COUNT = 5;
     private LinearLayout layout;
+    private TextView progress;
+    private ImageView imageView0;
     private ImageView imageView1;
     private ImageView imageView2;
     private ImageView imageView3;
@@ -41,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         ImageLoader.init(this);
 
         layout = findViewById(R.id.ll_group);
+        progress = findViewById(R.id.tv_progress);
+        imageView0 = findViewById(R.id.iv_0);
         imageView1 = findViewById(R.id.iv_1);
         imageView2 = findViewById(R.id.iv_2);
         imageView3 = findViewById(R.id.iv_3);
@@ -66,6 +74,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadImage() {
+        ImageLoader.with(this)
+                .load("http://rmrbtest-image.peopleapp.com/upload/image/201706/rmrb_23791498015584.gif")
+                .diskCacheStrategy(ImageMode.DiskCache.NONE)
+                .skipMemoryCache(true)
+                .scaleType(ImageMode.ScaleMode.CENTER_CROP)
+                .progress(new OnProgressListener() {
+                    @Override
+                    public void onProgress(String imageUrl, long bytesRead, long totalBytes, boolean isDone) {
+                        Log.e("Bill", totalBytes + "/" + bytesRead);
+                        progress.setText(totalBytes + "/" + bytesRead);
+                    }
+                })
+                .listener(new LoaderListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.e("Bill", "success");
+                    }
+
+                    @Override
+                    public void onFail() {
+                        Log.e("Bill", "fail");
+                    }
+                })
+                .into(imageView0);
+
         ImageLoader.with(this)
                 .load(R.mipmap.timg)
                 .filterType(ImageMode.FilterType.RoundedCorners)

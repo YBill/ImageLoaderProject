@@ -189,7 +189,7 @@ public class GlideLoader implements ILoader {
 
                     @Override
                     public boolean onResourceReady(T resource, Object model, Target<T> target, DataSource dataSource, boolean isFirstResource) {
-                        saveImg(config.load);
+                        saveImg(config);
                         if (config.loaderListener != null)
                             config.loaderListener.onSuccess();
                         return false;
@@ -355,9 +355,12 @@ public class GlideLoader implements ILoader {
         return isLoad;
     }
 
-    private void saveImg(Object load) {
-        if (load instanceof String) {
-            String url = (String) load;
+    private void saveImg(ImageConfig config) {
+        if (config.diskCacheStrategy == ImageMode.DiskCache.NONE) {
+            return;
+        }
+        if (config.load instanceof String) {
+            String url = (String) config.load;
             if (ImageContact.isGif(url)) {
                 ImageDbManager.getInstance().insertImage(url);
             }
