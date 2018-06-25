@@ -1,11 +1,18 @@
 package com.bill.imageloaderproject;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bill.imageloader.ImageLoader;
 import com.bill.imageloader.config.ImageMode;
@@ -40,6 +47,36 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView19;
     private ImageView imageView20;
 
+    private void verifyStoragePermissions(Activity activity) {
+        try {
+            //检测是否有写的权限
+            int permission = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // 没有写的权限，去申请写的权限，会弹出对话框
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            } else {
+                loadImage();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                loadImage();
+            } else {
+                // Permission Denied
+                Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,14 +107,15 @@ public class MainActivity extends AppCompatActivity {
         imageView19 = findViewById(R.id.iv_19);
         imageView20 = findViewById(R.id.iv_20);
 
-        loadImage();
+        verifyStoragePermissions(this);
+
     }
 
     private void loadImage() {
         ImageLoader.with(this)
                 .load("http://rmrbtest-image.peopleapp.com/upload/image/201706/rmrb_23791498015584.gif")
-                .diskCacheStrategy(ImageMode.DiskCache.NONE)
-                .skipMemoryCache(true)
+                .diskCacheStrategy(ImageMode.DiskCache.ALL)
+                .skipMemoryCache(false)
                 .scaleType(ImageMode.ScaleMode.CENTER_CROP)
                 .progress(new OnProgressListener() {
                     @Override

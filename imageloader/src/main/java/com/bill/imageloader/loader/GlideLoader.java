@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -28,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
@@ -456,13 +454,7 @@ public class GlideLoader implements ILoader {
 
     @Override
     public String getDiskCacheFolder() {
-        String path;
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            path = ImageContact.getGlideImageCache();
-        } else {
-            path = GlobalConfig.getContext().getCacheDir() + "/" + InternalCacheDiskCacheFactory.DEFAULT_DISK_CACHE_DIR;
-        }
-        return path;
+        return ImageContact.getGlideImageCache();
     }
 
     @Override

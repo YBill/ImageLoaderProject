@@ -79,6 +79,13 @@ public class ImageLoader {
         getActualLoader().clearMemory();
     }
 
+    /**
+     * 获取缓存目录
+     */
+    public static void getDiskCacheFolder() {
+        getActualLoader().getDiskCacheFolder();
+    }
+
     public static void onLowMemory() {
         getActualLoader().onLowMemory();
     }

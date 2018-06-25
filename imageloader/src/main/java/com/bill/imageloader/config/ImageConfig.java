@@ -130,7 +130,7 @@ public class ImageConfig {
         private Object requestContext;
         private ImageView imageView;
         private Object load;
-        private ImageMode.DiskCache diskCacheStrategy = ImageMode.DiskCache.DATA;
+        private ImageMode.DiskCache diskCacheStrategy = ImageMode.DiskCache.AUTOMATIC;
         private ImageMode.LoadPriority priority = ImageMode.LoadPriority.LOW;
         private int placeholder = -1;
         private int error = -1;
@@ -378,7 +378,7 @@ public class ImageConfig {
         }
 
         /**
-         * 磁盘缓存，默认DATA
+         * 磁盘缓存，默认AUTOMATIC
          *
          * @param diskCacheStrategy
          * @return

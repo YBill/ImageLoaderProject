@@ -2,6 +2,17 @@
 
 > 为了方便网络加载库后期更换，现在内部通过Glide实现。更换方式为新建一个类继承ILoader，并现实其中的方法操作图片，替换为默认的加载器即可。
 
+## 使用
+> 将imageloader以moudle的形式引入，添加网络和Sdcard读写权限(注意6.0以上动态权限)，然后初始化ImageLoader.init(context)即可，具体使用通过ImageLoader操作;
+
+```
+ImageLoader
+        .with(activity)
+        .load(url)
+        .into(imageView);
+```
+
+
 ## API
 
 > 下面为全局设置，通过ImageLoader操作
@@ -81,6 +92,12 @@ public static void setLoader(ILoader loader) {
 
 }
 ```
+### 12、获取磁盘缓存目录
+```
+public static void getDiskCacheFolder() {
+
+}
+```
 
 > 通过上面2中返回的ImageConfig.ConfigBuilder添加图片操作具体参数
 
@@ -89,7 +106,7 @@ public static void setLoader(ILoader loader) {
 ```
 load(Object load)
 ```
-### 2、磁盘缓存，默认DATA
+### 2、磁盘缓存，默认AUTOMATIC
 
 ```
 diskCacheStrategy(ImageMode.DiskCache diskCacheStrategy)
